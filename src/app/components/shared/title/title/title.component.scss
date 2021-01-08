@@ -1,0 +1,19 @@
+$blue: rgb(43, 32, 143);
+$green: rgb(46, 158, 36);
+
+.title {
+    font-family: 'Roboto', sans-serif;
+    color: $green;
+    border-bottom: 2px solid $blue;
+    border-top: 2px solid $blue;
+    padding: 1rem;
+    margin-top: 5rem;
+    width: fit-content;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $blue; 
+        color: #FFF;
+        transition: 0.5s;
+    }
+}

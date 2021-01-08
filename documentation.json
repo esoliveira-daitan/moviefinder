@@ -1,0 +1,1819 @@
+{
+    "pipes": [],
+    "interfaces": [
+        {
+            "name": "Movie",
+            "id": "interface-Movie-a843d90b1863fa81845a3e14c84e6e1b",
+            "file": "src/interfaces/movie.ts",
+            "type": "interface",
+            "sourceCode": "export interface Movie {\n    title: string;\n    release_date: string;\n    overview: string;\n}\n\nexport interface MovieAPIResponse {\n    page: number;\n    results: Movie[];\n    total_page: number;\n    tota_results: number;\n}\n",
+            "properties": [
+                {
+                    "name": "overview",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 4
+                },
+                {
+                    "name": "release_date",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 3
+                },
+                {
+                    "name": "title",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 2
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 150,
+            "methods": []
+        },
+        {
+            "name": "MovieAPIResponse",
+            "id": "interface-MovieAPIResponse-a843d90b1863fa81845a3e14c84e6e1b",
+            "file": "src/interfaces/movie.ts",
+            "type": "interface",
+            "sourceCode": "export interface Movie {\n    title: string;\n    release_date: string;\n    overview: string;\n}\n\nexport interface MovieAPIResponse {\n    page: number;\n    results: Movie[];\n    total_page: number;\n    tota_results: number;\n}\n",
+            "properties": [
+                {
+                    "name": "page",
+                    "type": "number",
+                    "optional": false,
+                    "description": "",
+                    "line": 8
+                },
+                {
+                    "name": "results",
+                    "type": "Movie[]",
+                    "optional": false,
+                    "description": "",
+                    "line": 9
+                },
+                {
+                    "name": "tota_results",
+                    "type": "number",
+                    "optional": false,
+                    "description": "",
+                    "line": 11
+                },
+                {
+                    "name": "total_page",
+                    "type": "number",
+                    "optional": false,
+                    "description": "",
+                    "line": 10
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 150,
+            "methods": []
+        },
+        {
+            "name": "MovieService",
+            "id": "interface-MovieService-c1c2e7c49f4298c0292f37d7ba8b42a7",
+            "file": "src/interfaces/services.ts",
+            "type": "interface",
+            "sourceCode": "export interface Service {\n    search: (query: string[]) => Promise<any[]>;\n}\n\nexport interface MovieService extends Service {\n    search: (query: string[]) => Promise<string[][]>;\n}\n",
+            "properties": [
+                {
+                    "name": "search",
+                    "type": "function",
+                    "optional": false,
+                    "description": "",
+                    "line": 6
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 150,
+            "methods": [],
+            "extends": "Service"
+        },
+        {
+            "name": "Service",
+            "id": "interface-Service-c1c2e7c49f4298c0292f37d7ba8b42a7",
+            "file": "src/interfaces/services.ts",
+            "type": "interface",
+            "sourceCode": "export interface Service {\n    search: (query: string[]) => Promise<any[]>;\n}\n\nexport interface MovieService extends Service {\n    search: (query: string[]) => Promise<string[][]>;\n}\n",
+            "properties": [
+                {
+                    "name": "search",
+                    "type": "function",
+                    "optional": false,
+                    "description": "",
+                    "line": 2
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 150,
+            "methods": []
+        }
+    ],
+    "injectables": [
+        {
+            "name": "MovieSearchService",
+            "id": "injectable-MovieSearchService-7d10dfde6443479b4f6c6d13271b74d4",
+            "file": "src/app/services/movie-search.service.ts",
+            "properties": [],
+            "methods": [
+                {
+                    "name": "search",
+                    "args": [
+                        {
+                            "name": "query",
+                            "type": "string[]"
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "{}",
+                    "typeParameters": [],
+                    "line": 14,
+                    "modifierKind": [
+                        114,
+                        120
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "query",
+                            "type": "string[]",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "description": "",
+            "sourceCode": "import { HttpClient } from '@angular/common/http';\nimport { Injectable } from '@angular/core';\n\nimport { MovieService } from 'src/interfaces/services';\nimport { MovieAPIResponse } from 'src/interfaces/movie';\nimport { forkJoin, Observable } from 'rxjs';\n\nconst API = 'https://api.themoviedb.org/3/search/movie?&api_key=feb6f0eeaa0a72662967d77079850353&query=';\n\n@Injectable({providedIn: 'root'})\nexport class MovieSearchService implements MovieService  {\n    constructor(private http: HttpClient) {}\n\n    public async search(query: string[]) {\n        const observables: Observable<MovieAPIResponse>[] = [];\n        query.map((item: string) => {\n            observables.push(this.http.get<MovieAPIResponse>(API + encodeURIComponent(item)));\n        });\n\n        const movies: string[][] = [];\n        forkJoin(observables).subscribe((responses: MovieAPIResponse[]) => {\n            responses.map(response => {\n                response.results.map(element => {\n                    const movie: string[] = [];\n                    movie.push(element.title);\n                    movie.push(element.release_date);\n                    movie.push(element.overview);\n                    movies.push(movie);\n                });\n            });\n        });\n        return movies;\n    }\n}\n",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "args": [
+                    {
+                        "name": "http",
+                        "type": "HttpClient"
+                    }
+                ],
+                "line": 11,
+                "jsdoctags": [
+                    {
+                        "name": "http",
+                        "type": "HttpClient",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "type": "injectable"
+        }
+    ],
+    "classes": [
+        {
+            "name": "AppPage",
+            "id": "class-AppPage-e666007312551271a1e6ae42610b3bec",
+            "file": "e2e/src/app.po.ts",
+            "type": "class",
+            "sourceCode": "import { browser, by, element } from 'protractor';\n\nexport class AppPage {\n  navigateTo() {\n    return browser.get(browser.baseUrl) as Promise<any>;\n  }\n\n  getTitleText() {\n    return element(by.css('app-root h1')).getText() as Promise<string>;\n  }\n}\n",
+            "properties": [],
+            "methods": [
+                {
+                    "name": "getTitleText",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "any",
+                    "typeParameters": [],
+                    "line": 8
+                },
+                {
+                    "name": "navigateTo",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "any",
+                    "typeParameters": [],
+                    "line": 4
+                }
+            ],
+            "indexSignatures": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "hostBindings": [],
+            "hostListeners": []
+        }
+    ],
+    "directives": [],
+    "components": [
+        {
+            "name": "AppComponent",
+            "id": "component-AppComponent-525b326e79d08d49093733dadd793c18",
+            "file": "src/app/app.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-root",
+            "styleUrls": [
+                "./app.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./app.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "columns",
+                    "defaultValue": "['Title', 'Release Date', 'Overview']",
+                    "type": "[]",
+                    "optional": false,
+                    "description": "",
+                    "line": 10
+                },
+                {
+                    "name": "data",
+                    "defaultValue": "[{\n    title: 'Matrix',\n    releaseDate: '1993-02-03',\n    overview: 'hehe'\n  },\n  {\n    title: 'Matrix',\n    releaseDate: '1993-02-03',\n    overview: 'hehe'\n  }]",
+                    "type": "[]",
+                    "optional": false,
+                    "description": "",
+                    "line": 11
+                },
+                {
+                    "name": "title",
+                    "defaultValue": "'MovieFinder'",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 9
+                }
+            ],
+            "methodsClass": [],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-root',\n  templateUrl: './app.component.html',\n  styleUrls: ['./app.component.scss']\n})\nexport class AppComponent {\n  title = 'MovieFinder';\n  columns = ['Title', 'Release Date', 'Overview'];\n  data = [{\n    title: 'Matrix',\n    releaseDate: '1993-02-03',\n    overview: 'hehe'\n  },\n  {\n    title: 'Matrix',\n    releaseDate: '1993-02-03',\n    overview: 'hehe'\n  }];\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');\n",
+                    "styleUrl": "./app.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "templateData": "<router-outlet></router-outlet>"
+        },
+        {
+            "name": "HomePageComponent",
+            "id": "component-HomePageComponent-9d4a6d47650313b2e651464ce7f02d87",
+            "file": "src/app/components/home-page/home-page/home-page.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-home-page",
+            "styleUrls": [
+                "./home-page.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./home-page.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "about",
+                    "defaultValue": "'A place to search all movies around the wolrd! Type your search below.'",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 12,
+                    "modifierKind": [
+                        114
+                    ]
+                },
+                {
+                    "name": "searchBarPlaceholder",
+                    "defaultValue": "'Search...'",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 10,
+                    "modifierKind": [
+                        114
+                    ]
+                },
+                {
+                    "name": "title",
+                    "defaultValue": "'MovieFinder'",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 11,
+                    "modifierKind": [
+                        114
+                    ]
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "catchSearchString",
+                    "args": [
+                        {
+                            "name": "searchStr",
+                            "type": "string[]"
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 16,
+                    "modifierKind": [
+                        114
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "searchStr",
+                            "type": "string[]",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import { Component } from '@angular/core';\nimport { NavigationExtras, Router } from '@angular/router';\n\n@Component({\n  selector: 'app-home-page',\n  templateUrl: './home-page.component.html',\n  styleUrls: ['./home-page.component.scss']\n})\nexport class HomePageComponent {\n  public searchBarPlaceholder = 'Search...';\n  public title = 'MovieFinder';\n  public about = 'A place to search all movies around the wolrd! Type your search below.';\n\n  constructor(private router: Router) { }\n\n  public catchSearchString(searchStr: string[]) {\n    const queryParams = {\n      words: JSON.stringify(searchStr)\n    };\n    const navigationExtras: NavigationExtras = {\n      queryParams\n    };\n    this.router.navigate(['/search'], navigationExtras);\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": ".container {\n    text-align: center;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n}\n\n.about {\n    font-family: 'Roboto', sans-serif;\n    font-size: 14pt;\n    width: 25rem;\n}\n",
+                    "styleUrl": "./home-page.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "args": [
+                    {
+                        "name": "router",
+                        "type": "Router"
+                    }
+                ],
+                "line": 12,
+                "jsdoctags": [
+                    {
+                        "name": "router",
+                        "type": "Router",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "templateData": "<div class=\"container\">\n  <app-title></app-title>\n  <div class=\"about\">\n    <p>{{ about }}</p>\n  </div>\n  <app-search-bar [placeholder]=\"searchBarPlaceholder\" (sendValue)=\"catchSearchString($event)\"></app-search-bar>\n</div>"
+        },
+        {
+            "name": "KeywordComponent",
+            "id": "component-KeywordComponent-3574712943c1f207ffb27a02279968d1",
+            "file": "src/app/components/search-bar/keyword/keyword.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-keyword",
+            "styleUrls": [
+                "./keyword.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./keyword.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [
+                {
+                    "name": "label",
+                    "defaultValue": "''",
+                    "line": 9
+                },
+                {
+                    "name": "removeKeyword",
+                    "line": 10,
+                    "type": "function"
+                }
+            ],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "delete",
+                    "defaultValue": "() => {...}",
+                    "type": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 12,
+                    "modifierKind": [
+                        114
+                    ]
+                }
+            ],
+            "methodsClass": [],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import { Component, Input } from '@angular/core';\n\n@Component({\n  selector: 'app-keyword',\n  templateUrl: './keyword.component.html',\n  styleUrls: ['./keyword.component.scss']\n})\nexport class KeywordComponent {\n  @Input() label = '';\n  @Input() removeKeyword: (label: string) => void;\n\n  public delete = () => {\n    this.removeKeyword(this.label);\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": ".keyword-container {\n    display: flex;\n    flex-direction: row;\n    background-color: rgb(224, 222, 222);\n    border-radius: 100px;\n    margin-top: 0.2rem;\n    margin-right: 0.2rem;\n    position: relative;\n    padding: 0 1rem;\n    justify-content: center;\n    align-items: center;\n    max-width: fit-content;\n    &:hover {\n        background-color: rgb(209, 209, 209);\n    }\n}\n\n.keyword {\n    font-family: 'Roboto', sans-serif;\n    font-size: 10pt;\n    margin-right: 0.3rem;\n    white-space: nowrap;\n}\n\n.keyword-button {\n    background-color: rgb(128, 126, 126);\n    font-weight: bold;\n    border: rgb(128, 126, 126);\n    border-radius: 100%;\n    color: #FFF;\n    cursor: pointer;\n    font-family: 'Roboto', sans-serif;\n    font-size: 8pt;\n    outline: none;\n    padding: 1px 5px;;\n}\n",
+                    "styleUrl": "./keyword.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "templateData": "<div class=\"keyword-container\">\n  <p class=\"keyword\">{{ label }}</p>\n  <button class=\"keyword-button\" (click)=\"delete()\">x</button>\n</div>"
+        },
+        {
+            "name": "LightGreenButtonComponent",
+            "id": "component-LightGreenButtonComponent-08eb4394f1b55112aadd1e45525d772c",
+            "file": "src/app/components/buttons/light-green-button/light-green-button.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-light-green-button",
+            "styleUrls": [
+                "./light-green-button.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./light-green-button.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [
+                {
+                    "name": "click",
+                    "line": 10,
+                    "type": "function"
+                },
+                {
+                    "name": "text",
+                    "defaultValue": "''",
+                    "line": 9
+                }
+            ],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [
+                {
+                    "name": "onButtonClick",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 12,
+                    "modifierKind": [
+                        114
+                    ]
+                }
+            ],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import { Component, Input } from '@angular/core';\n\n@Component({\n  selector: 'app-light-green-button',\n  templateUrl: './light-green-button.component.html',\n  styleUrls: ['./light-green-button.component.scss']\n})\nexport class LightGreenButtonComponent {\n  @Input() text = '';\n  @Input() click: () => void;\n\n  public onButtonClick() {\n    this.click();\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "$green: rgb(46, 158, 36);\n$dark-green: rgb(36, 124, 28);\n\n.light-green-button {\n    margin-bottom: 0.5rem;\n    align-self: flex-end;\n    padding: 0.5rem;\n    border: 0em;\n    color: #FFF;\n    font-size: 12pt;\n    font-family:  sans-serif;\n    background-color: $green;    \n    border-radius: 2px;\n    cursor: pointer;\n    outline: none;\n\n    &:hover {\n        background-color:  $dark-green;\n    }\n}",
+                    "styleUrl": "./light-green-button.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "templateData": "<button class=\"light-green-button\" (click)=\"onButtonClick()\">{{ text }}</button>"
+        },
+        {
+            "name": "NoResultsComponent",
+            "id": "component-NoResultsComponent-6585f41c7b4cc753a3e67c0a9e5e2dcf",
+            "file": "src/app/components/results-page/no-results/no-results.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-no-results",
+            "styleUrls": [
+                "./no-results.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./no-results.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "goBack",
+                    "defaultValue": "() => {...}",
+                    "type": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 14,
+                    "modifierKind": [
+                        114
+                    ]
+                },
+                {
+                    "name": "message",
+                    "defaultValue": "'No movies was found.'",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 10,
+                    "modifierKind": [
+                        114
+                    ]
+                }
+            ],
+            "methodsClass": [],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import { Component } from '@angular/core';\nimport { Router } from '@angular/router';\n\n@Component({\n  selector: 'app-no-results',\n  templateUrl: './no-results.component.html',\n  styleUrls: ['./no-results.component.scss']\n})\nexport class NoResultsComponent {\n  public message = 'No movies was found.';\n\n  constructor(private router: Router) { }\n\n  public goBack = () => {\n    this.router.navigate(['']);\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": ".container {\n    padding: 3rem;\n    text-align: center;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n}\n\n.message {\n    font-family: 'Roboto', sans-serif;\n    font-size: 14pt;\n}",
+                    "styleUrl": "./no-results.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "args": [
+                    {
+                        "name": "router",
+                        "type": "Router"
+                    }
+                ],
+                "line": 10,
+                "jsdoctags": [
+                    {
+                        "name": "router",
+                        "type": "Router",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "templateData": "<div class=\"container\">\n  <p class=\"message\">{{ message }}</p>\n  <app-light-green-button text=\"Go Back\" [click]=\"goBack\"></app-light-green-button>\n</div>"
+        },
+        {
+            "name": "NotFoundComponent",
+            "id": "component-NotFoundComponent-4f51d5240b991f3651c472faba36b17b",
+            "file": "src/app/errors/not-found/not-found.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-not-found",
+            "styleUrls": [],
+            "styles": [
+                "h2, p { text-align: center; }"
+            ],
+            "template": "<h2>{{ title }}</h2>\n<p>{{ message }}</p>\n",
+            "templateUrl": [],
+            "viewProviders": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "message",
+                    "defaultValue": "'The link you have acccessed may be broken or the page may have ben removed.'",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 13,
+                    "modifierKind": [
+                        114
+                    ]
+                },
+                {
+                    "name": "title",
+                    "defaultValue": "'This page is not avaliable'",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 12,
+                    "modifierKind": [
+                        114
+                    ]
+                }
+            ],
+            "methodsClass": [],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import { Component, OnInit } from '@angular/core';\n\n@Component({\n  selector: 'app-not-found',\n  template: `\n      <h2>{{ title }}</h2>\n      <p>{{ message }}</p>\n  `,\n  styles: ['h2, p { text-align: center; }']\n})\nexport class NotFoundComponent {\n  public title = 'This page is not avaliable';\n  public message = 'The link you have acccessed may be broken or the page may have ben removed.';\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "h2, p { text-align: center; }\n"
+        },
+        {
+            "name": "ResultsPageComponent",
+            "id": "component-ResultsPageComponent-34885824c18ab053f9450894591cc24b",
+            "file": "src/app/components/results-page/results-page/results-page.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-results-page",
+            "styleUrls": [
+                "./results-page.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./results-page.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "columns",
+                    "defaultValue": "['Title', 'Release Date', 'Overview']",
+                    "type": "[]",
+                    "optional": false,
+                    "description": "",
+                    "line": 13,
+                    "modifierKind": [
+                        114
+                    ]
+                },
+                {
+                    "name": "data",
+                    "defaultValue": "[]",
+                    "type": "string[][]",
+                    "optional": false,
+                    "description": "",
+                    "line": 14,
+                    "modifierKind": [
+                        114
+                    ]
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "any",
+                    "typeParameters": [],
+                    "line": 18,
+                    "modifierKind": [
+                        114,
+                        120
+                    ]
+                }
+            ],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import { Component, OnInit } from '@angular/core';\nimport { ActivatedRoute } from '@angular/router';\nimport { MovieSearchService } from 'src/app/services/movie-search.service';\n\nconst PARAM = 'words';\n\n@Component({\n  selector: 'app-results-page',\n  templateUrl: './results-page.component.html',\n  styleUrls: ['./results-page.component.scss']\n})\nexport class ResultsPageComponent implements OnInit {\n  public columns = ['Title', 'Release Date', 'Overview'];\n  public data: string[][] = [];\n\n  constructor(private movieSearchService: MovieSearchService, private route: ActivatedRoute) { }\n\n  public async ngOnInit() {\n    const param: string[] = JSON.parse(this.route.snapshot.queryParamMap.get(PARAM));\n    this.data = await this.movieSearchService.search(param);\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "$green: rgb(46, 158, 36);\n$dark-green: rgb(36, 124, 28);\n\n.results {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n}\n\n.content {\n    width: 90%;\n    margin: 1rem;\n}",
+                    "styleUrl": "./results-page.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "args": [
+                    {
+                        "name": "movieSearchService",
+                        "type": "MovieSearchService"
+                    },
+                    {
+                        "name": "route",
+                        "type": "ActivatedRoute"
+                    }
+                ],
+                "line": 14,
+                "jsdoctags": [
+                    {
+                        "name": "movieSearchService",
+                        "type": "MovieSearchService",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    },
+                    {
+                        "name": "route",
+                        "type": "ActivatedRoute",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "implements": [
+                "OnInit"
+            ],
+            "templateData": "<div class=\"results\">\n    <app-title></app-title>\n    <div class=\"content\">\n        <div *ngIf=\"data.length !== 0 else elseBlock\">\n            <app-table [columns]=\"columns\" [data]=\"data\"></app-table>\n        </div>\n        <ng-template #elseBlock>\n            <app-no-results></app-no-results>            \n        </ng-template>      \n    </div>\n</div>"
+        },
+        {
+            "name": "SearchBarComponent",
+            "id": "component-SearchBarComponent-26139960bd844e15f1ba4db922a5fb4d",
+            "file": "src/app/components/search-bar/search-bar/search-bar.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-search-bar",
+            "styleUrls": [
+                "./search-bar.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./search-bar.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [
+                {
+                    "name": "placeholder",
+                    "defaultValue": "''",
+                    "line": 11
+                }
+            ],
+            "outputsClass": [
+                {
+                    "name": "sendValue",
+                    "defaultValue": "new EventEmitter()",
+                    "line": 12,
+                    "type": "EventEmitter"
+                }
+            ],
+            "propertiesClass": [
+                {
+                    "name": "allSearchStr",
+                    "defaultValue": "[]",
+                    "type": "string[]",
+                    "optional": false,
+                    "description": "",
+                    "line": 16,
+                    "modifierKind": [
+                        114
+                    ]
+                },
+                {
+                    "name": "emptyInputWarning",
+                    "defaultValue": "'Please, type anyhing to search.'",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 14,
+                    "modifierKind": [
+                        114
+                    ]
+                },
+                {
+                    "name": "hideEmptyWarning",
+                    "defaultValue": "true",
+                    "type": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 17,
+                    "modifierKind": [
+                        114
+                    ]
+                },
+                {
+                    "name": "hideMaxKeywordsWarning",
+                    "defaultValue": "true",
+                    "type": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 18,
+                    "modifierKind": [
+                        114
+                    ]
+                },
+                {
+                    "name": "maxKeywordsWarning",
+                    "defaultValue": "'You have reached the limit for keywords search.'",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 15,
+                    "modifierKind": [
+                        114
+                    ]
+                },
+                {
+                    "name": "removeKeyword",
+                    "defaultValue": "() => {...}",
+                    "type": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 31,
+                    "modifierKind": [
+                        114
+                    ]
+                },
+                {
+                    "name": "searchStr",
+                    "defaultValue": "''",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 13,
+                    "modifierKind": [
+                        114
+                    ]
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "addKeyword",
+                    "args": [
+                        {
+                            "name": "value",
+                            "type": "string"
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 48,
+                    "modifierKind": [
+                        112
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "value",
+                            "type": "string",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "getInputValue",
+                    "args": [
+                        {
+                            "name": "event",
+                            "type": "KeyboardEvent"
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 20,
+                    "modifierKind": [
+                        114
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "event",
+                            "type": "KeyboardEvent",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "sendSearchValue",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 38,
+                    "modifierKind": [
+                        114
+                    ]
+                }
+            ],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import { Component, Input, Output } from '@angular/core';\nimport { EventEmitter } from '@angular/core';\n\nconst MAX_KEYWORD = 4;\n@Component({\n    selector: 'app-search-bar',\n    templateUrl: './search-bar.component.html',\n    styleUrls: ['./search-bar.component.scss']\n})\nexport class SearchBarComponent {\n    @Input() placeholder = '';\n    @Output() sendValue = new EventEmitter();\n    public searchStr = '';\n    public emptyInputWarning = 'Please, type anyhing to search.';\n    public maxKeywordsWarning = 'You have reached the limit for keywords search.';\n    public allSearchStr: string[] = [];\n    public hideEmptyWarning = true;\n    public hideMaxKeywordsWarning = true;\n\n    public getInputValue(event: KeyboardEvent) {\n        const key = event.code;\n        if (key === 'Comma') {\n            event.preventDefault();\n        }\n        if (key === 'Comma' || key === 'Enter' || key === 'NumpadEnter') {\n            this.addKeyword(this.searchStr);\n            this.searchStr = '';\n        }\n    }\n\n    public removeKeyword = (value: string) => {\n        this.allSearchStr = this.allSearchStr.filter(item => item !== value);\n        if (this.allSearchStr.length < MAX_KEYWORD && this.hideMaxKeywordsWarning === false) {\n            this.hideMaxKeywordsWarning = true;\n        }\n    }\n\n    public sendSearchValue() {\n        if (this.searchStr === '' && this.allSearchStr.length === 0) {\n            this.hideEmptyWarning = false;\n            return;\n        } else {\n            this.addKeyword(this.searchStr);\n        }\n        this.sendValue.emit(this.allSearchStr);\n    }\n\n    private addKeyword(value: string) {\n        if (value === '' || this.allSearchStr.filter(item => item === value).length) {\n            return;\n        }\n        if (this.allSearchStr.length === MAX_KEYWORD) {\n            this.hideMaxKeywordsWarning = false;\n            return;\n        }\n        this.allSearchStr.push(value);\n    }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "$green: rgb(46, 158, 36);\n$dark-green: rgb(36, 124, 28);\n\n.search-bar {\n    padding: 3rem;\n}\n\n.search-bar-input {\n    width: 30rem;\n    padding: 0.8em;\n    padding-right: 1.5rem;\n    border: 1px solid  rgb(214, 214, 214);\n    border-radius: 2px;\n    border-style: solid none solid solid;\n    font-family: serif;\n    font-size: 12pt;\n    color: rgb(112, 111, 111);  \n    margin-right: -1rem;\n    outline:none;\n}\n\n.search-bar-button { \n    padding: 0.8em 1em;\n    border: 0em;\n    color: #FFF;\n    font-size: 12pt;\n    font-family: serif;\n    background-color: $green;\n    border: 1px solid  $green;\n    border-radius: 0px 2px 2px 0px;\n    cursor: pointer;\n    outline: none;\n\n    &:hover {\n        background-color:  $dark-green;\n        border: 1px solid  $dark-green\n    }\n}\n\n.keywords {\n    width: 35.5rem;\n    display: flex;\n    flex-direction: row;\n    max-width: fit-content;\n    position: absolute;\n    flex-wrap: wrap;\n}\n",
+                    "styleUrl": "./search-bar.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "templateData": "<div class=\"search-bar\">\n    <p [hidden]=\"hideEmptyWarning\" >{{ emptyInputWarning }}</p>\n    <p [hidden]=\"hideMaxKeywordsWarning\" >{{ maxKeywordsWarning }}</p>\n    <div class=\"input\">\n        <input class=\"search-bar-input\" type=\"text\" [(ngModel)]=\"searchStr\" [placeholder]=\"placeholder\" (keypress)=\"getInputValue($event)\"/>\n        <button class=\"search-bar-button\" (click)=\"sendSearchValue()\">Go</button>\n    </div>\n    <div class=\"keywords\" >\n        <app-keyword *ngFor=\"let str of allSearchStr\" [label]=\"str\" [removeKeyword]=\"removeKeyword\"></app-keyword>\n    </div>\n</div>"
+        },
+        {
+            "name": "TableComponent",
+            "id": "component-TableComponent-c6e46b50a942a543ce6653877cd05f03",
+            "file": "src/app/components/table/table/table.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-table",
+            "styleUrls": [
+                "./table.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./table.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [
+                {
+                    "name": "columns",
+                    "line": 9,
+                    "type": "string[]"
+                },
+                {
+                    "name": "data",
+                    "line": 10,
+                    "type": "object[]"
+                }
+            ],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import { Component, Input } from '@angular/core';\n\n@Component({\n    selector: 'app-table',\n    templateUrl: './table.component.html',\n    styleUrls: ['./table.component.scss']\n})\nexport class TableComponent {\n    @Input() columns: string[];\n    @Input() data: object[];\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "$gray: rgb(46, 158, 36);\n\n.table {\n    border-radius: 10px 10px 0 0;\n    border-bottom: 2px solid $gray;\n    box-shadow: 0px -0.1rem 0.3rem  rgb(182, 182, 182);\n    border-collapse: collapse;\n}\n\n.table-title-container {\n    font-family: 'Roboto', sans-serif;\n    background-color: $gray;\n    color: #FFF;\n    border-top: none;\n}\n\n.table-title {\n    padding: 1rem 5rem;\n    text-align: center;\n\n    &:first-child{\n        border-radius: 5px 0 0 0;\n    }\n\n    &:last-child {\n        border-radius: 0 5px 0 0;\n    }\n}\n\n.table-data {\n    border-top: 1px solid rgb(214, 214, 214);\n    text-align: justify;\n    &:first-child {\n        border-top: none;\n    }\n}\n\n.table-data-item {\n    font-family: sans-serif;\n    padding: 0.7rem;\n}\n",
+                    "styleUrl": "./table.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "templateData": "<table class=\"table\" cellspacing=\"0\" cellpadding=\"0\">\n  <thead>\n    <tr class=\"table-title-container\">\n      <th class=\"table-title\" *ngFor=\"let column of columns\">{{ column }}</th>\n    </tr>\n  </thead>\n    <tbody>\n    <tr class=\"table-data\" *ngFor=\"let movie of data\">\n      <td class=\"table-data-item\" *ngFor=\"let item of movie\">{{ item  }}</td>\n    </tr>\n  </tbody>\n</table>"
+        },
+        {
+            "name": "TitleComponent",
+            "id": "component-TitleComponent-6f9a527d6c5bb37bb19d5e8f08d47e3f",
+            "file": "src/app/components/title/title/title.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-title",
+            "styleUrls": [
+                "./title.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./title.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "title",
+                    "defaultValue": "'MovieFinder'",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 10,
+                    "modifierKind": [
+                        114
+                    ]
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "goToHomePage",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 14,
+                    "modifierKind": [
+                        114
+                    ]
+                }
+            ],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import { Component, OnInit } from '@angular/core';\nimport { Router } from '@angular/router';\n\n@Component({\n  selector: 'app-title',\n  templateUrl: './title.component.html',\n  styleUrls: ['./title.component.scss']\n})\nexport class TitleComponent {\n  public title = 'MovieFinder';\n\n  constructor(private router: Router) { }\n\n  public goToHomePage() {\n    this.router.navigate(['']);\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "$blue: rgb(43, 32, 143);\n$green: rgb(46, 158, 36);\n\n.title {\n    font-family: 'Roboto', sans-serif;\n    color: $green;\n    border-bottom: 2px solid $blue;\n    border-top: 2px solid $blue;\n    padding: 1rem;\n    margin-top: 5rem;\n    width: fit-content;\n    cursor: pointer;\n\n    &:hover {\n        background-color: $blue; \n        color: #FFF;\n        transition: 0.5s;\n    }\n}",
+                    "styleUrl": "./title.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "args": [
+                    {
+                        "name": "router",
+                        "type": "Router"
+                    }
+                ],
+                "line": 10,
+                "jsdoctags": [
+                    {
+                        "name": "router",
+                        "type": "Router",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "templateData": "<h1 class=\"title\" (click)=\"goToHomePage()\">\n  {{ title }}\n</h1>"
+        }
+    ],
+    "modules": [
+        {
+            "name": "AppModule",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": [
+                        {
+                            "name": "AppComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "imports",
+                    "elements": [
+                        {
+                            "name": "AppRoutingModule"
+                        },
+                        {
+                            "name": "ErrorsModule"
+                        },
+                        {
+                            "name": "HomePageModule"
+                        },
+                        {
+                            "name": "ResultsPageModule"
+                        }
+                    ]
+                },
+                {
+                    "type": "exports",
+                    "elements": []
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": [
+                        {
+                            "name": "AppComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "AppRoutingModule",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": []
+                },
+                {
+                    "type": "imports",
+                    "elements": []
+                },
+                {
+                    "type": "exports",
+                    "elements": []
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "ButtonsModule",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": [
+                        {
+                            "name": "LightGreenButtonComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "imports",
+                    "elements": []
+                },
+                {
+                    "type": "exports",
+                    "elements": [
+                        {
+                            "name": "LightGreenButtonComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "ErrorsModule",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": [
+                        {
+                            "name": "NotFoundComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "imports",
+                    "elements": []
+                },
+                {
+                    "type": "exports",
+                    "elements": []
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "HomePageModule",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": [
+                        {
+                            "name": "HomePageComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "imports",
+                    "elements": [
+                        {
+                            "name": "SearchBarModule"
+                        },
+                        {
+                            "name": "TableModule"
+                        },
+                        {
+                            "name": "TitleModule"
+                        }
+                    ]
+                },
+                {
+                    "type": "exports",
+                    "elements": []
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "ResultsPageModule",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": [
+                        {
+                            "name": "NoResultsComponent"
+                        },
+                        {
+                            "name": "ResultsPageComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "imports",
+                    "elements": [
+                        {
+                            "name": "ButtonsModule"
+                        },
+                        {
+                            "name": "TableModule"
+                        },
+                        {
+                            "name": "TitleModule"
+                        }
+                    ]
+                },
+                {
+                    "type": "exports",
+                    "elements": []
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "SearchBarModule",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": [
+                        {
+                            "name": "KeywordComponent"
+                        },
+                        {
+                            "name": "SearchBarComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "imports",
+                    "elements": []
+                },
+                {
+                    "type": "exports",
+                    "elements": [
+                        {
+                            "name": "SearchBarComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "TableModule",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": [
+                        {
+                            "name": "TableComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "imports",
+                    "elements": []
+                },
+                {
+                    "type": "exports",
+                    "elements": [
+                        {
+                            "name": "TableComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "TitleModule",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": [
+                        {
+                            "name": "TitleComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "imports",
+                    "elements": []
+                },
+                {
+                    "type": "exports",
+                    "elements": [
+                        {
+                            "name": "TitleComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        }
+    ],
+    "miscellaneous": {
+        "variables": [
+            {
+                "name": "API",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/services/movie-search.service.ts",
+                "type": "string",
+                "defaultValue": "'https://api.themoviedb.org/3/search/movie?&api_key=feb6f0eeaa0a72662967d77079850353&query='"
+            },
+            {
+                "name": "context",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/test.ts",
+                "type": "",
+                "defaultValue": "require.context('./', true, /\\.spec\\.ts$/)"
+            },
+            {
+                "name": "environment",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/environments/environment.prod.ts",
+                "type": "object",
+                "defaultValue": "{\n  production: true\n}"
+            },
+            {
+                "name": "environment",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/environments/environment.ts",
+                "type": "object",
+                "defaultValue": "{\n  production: false\n}"
+            },
+            {
+                "name": "MAX_KEYWORD",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/components/search-bar/search-bar/search-bar.component.ts",
+                "type": "number",
+                "defaultValue": "4"
+            },
+            {
+                "name": "PARAM",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/components/results-page/results-page/results-page.component.ts",
+                "type": "string",
+                "defaultValue": "'words'"
+            },
+            {
+                "name": "require",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/test.ts",
+                "type": "any"
+            }
+        ],
+        "functions": [],
+        "typealiases": [],
+        "enumerations": [],
+        "groupedVariables": {
+            "src/app/services/movie-search.service.ts": [
+                {
+                    "name": "API",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/services/movie-search.service.ts",
+                    "type": "string",
+                    "defaultValue": "'https://api.themoviedb.org/3/search/movie?&api_key=feb6f0eeaa0a72662967d77079850353&query='"
+                }
+            ],
+            "src/test.ts": [
+                {
+                    "name": "context",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/test.ts",
+                    "type": "",
+                    "defaultValue": "require.context('./', true, /\\.spec\\.ts$/)"
+                },
+                {
+                    "name": "require",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/test.ts",
+                    "type": "any"
+                }
+            ],
+            "src/environments/environment.prod.ts": [
+                {
+                    "name": "environment",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/environments/environment.prod.ts",
+                    "type": "object",
+                    "defaultValue": "{\n  production: true\n}"
+                }
+            ],
+            "src/environments/environment.ts": [
+                {
+                    "name": "environment",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/environments/environment.ts",
+                    "type": "object",
+                    "defaultValue": "{\n  production: false\n}"
+                }
+            ],
+            "src/app/components/search-bar/search-bar/search-bar.component.ts": [
+                {
+                    "name": "MAX_KEYWORD",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/components/search-bar/search-bar/search-bar.component.ts",
+                    "type": "number",
+                    "defaultValue": "4"
+                }
+            ],
+            "src/app/components/results-page/results-page/results-page.component.ts": [
+                {
+                    "name": "PARAM",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/components/results-page/results-page/results-page.component.ts",
+                    "type": "string",
+                    "defaultValue": "'words'"
+                }
+            ]
+        },
+        "groupedFunctions": {},
+        "groupedEnumerations": {},
+        "groupedTypeAliases": {}
+    },
+    "routes": {
+        "name": "<root>",
+        "kind": "module",
+        "className": "AppModule",
+        "children": [
+            {
+                "name": "routes",
+                "filename": "src/app/app-routing.module.ts",
+                "module": "AppRoutingModule",
+                "children": [
+                    {
+                        "path": "",
+                        "component": "HomePageComponent"
+                    },
+                    {
+                        "path": "search",
+                        "component": "ResultsPageComponent"
+                    },
+                    {
+                        "path": "no-results",
+                        "component": "NoResultsComponent"
+                    },
+                    {
+                        "path": "**",
+                        "component": "NotFoundComponent"
+                    }
+                ],
+                "kind": "module"
+            }
+        ]
+    },
+    "coverage": {
+        "count": 0,
+        "status": "low",
+        "files": [
+            {
+                "filePath": "e2e/src/app.po.ts",
+                "type": "class",
+                "linktype": "classe",
+                "name": "AppPage",
+                "coveragePercent": 0,
+                "coverageCount": "0/3",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/app.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "AppComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/4",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/buttons/light-green-button/light-green-button.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "LightGreenButtonComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/4",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/home-page/home-page/home-page.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "HomePageComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/6",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/results-page/no-results/no-results.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "NoResultsComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/4",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/results-page/results-page/results-page.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "ResultsPageComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/5",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/results-page/results-page/results-page.component.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "PARAM",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/search-bar/keyword/keyword.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "KeywordComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/4",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/search-bar/search-bar/search-bar.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "SearchBarComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/13",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/search-bar/search-bar/search-bar.component.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "MAX_KEYWORD",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/table/table/table.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "TableComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/3",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/title/title/title.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "TitleComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/4",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/errors/not-found/not-found.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "NotFoundComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/3",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/services/movie-search.service.ts",
+                "type": "injectable",
+                "linktype": "injectable",
+                "name": "MovieSearchService",
+                "coveragePercent": 0,
+                "coverageCount": "0/3",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/services/movie-search.service.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "API",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/environments/environment.prod.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "environment",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/environments/environment.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "environment",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/interfaces/movie.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "Movie",
+                "coveragePercent": 0,
+                "coverageCount": "0/4",
+                "status": "low"
+            },
+            {
+                "filePath": "src/interfaces/movie.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "MovieAPIResponse",
+                "coveragePercent": 0,
+                "coverageCount": "0/5",
+                "status": "low"
+            },
+            {
+                "filePath": "src/interfaces/services.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "MovieService",
+                "coveragePercent": 0,
+                "coverageCount": "0/2",
+                "status": "low"
+            },
+            {
+                "filePath": "src/interfaces/services.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "Service",
+                "coveragePercent": 0,
+                "coverageCount": "0/2",
+                "status": "low"
+            },
+            {
+                "filePath": "src/test.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "context",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/test.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "require",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            }
+        ]
+    }
+}

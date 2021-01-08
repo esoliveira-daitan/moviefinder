@@ -1,0 +1,13 @@
+$green: rgb(46, 158, 36);
+$dark-green: rgb(36, 124, 28);
+
+.results {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.content {
+    width: 90%;
+    margin: 1rem;
+}

@@ -1,0 +1,11 @@
+<div class="results">
+    <app-title></app-title>
+    <div class="content">
+        <div *ngIf="data.length !== 0 else elseBlock">
+            <app-table [columns]="columns" [data]="data"></app-table>
+        </div>
+        <ng-template #elseBlock>
+            <app-no-results></app-no-results>            
+        </ng-template>      
+    </div>
+</div>

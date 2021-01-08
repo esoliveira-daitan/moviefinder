@@ -1,0 +1,41 @@
+$green: rgb(46, 158, 36);
+
+.app-table {
+    border-radius: 10px 10px 0 0;
+    border-bottom: 2px solid $green;
+    box-shadow: 0px -0.1rem 0.3rem  rgb(182, 182, 182);
+    border-collapse: collapse;
+
+    & > .header {
+        font-family: 'Roboto', sans-serif;
+        background-color: $green;
+        color: #FFF;
+        border-top: none;
+    }
+
+    & > .body {
+        border-top: 1px solid rgb(214, 214, 214);
+        text-align: justify;
+        &:first-child {
+            border-top: none;
+        }
+    }
+}
+
+.title {
+    padding: 1rem 5rem;
+    text-align: center;
+
+    &:first-child{
+        border-radius: 5px 0 0 0;
+    }
+
+    &:last-child {
+        border-radius: 0 5px 0 0;
+    }
+}
+
+.item {
+    font-family: sans-serif;
+    padding: 0.7rem;
+}

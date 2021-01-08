@@ -1,0 +1,9 @@
+<div class="app-search-bar">
+    <p [hidden]="hideEmptyWarning" >{{ emptyInputWarning }}</p>
+    <p [hidden]="hideMaxKeywordsWarning" >{{ maxKeywordsWarning }}</p>
+    <input class="input" type="text" [(ngModel)]="searchStr" [placeholder]="placeholder" (keypress)="getInputValue($event)"/>
+    <button class="button" (click)="sendSearchValue()">Go</button>
+    <div class="keywords" >
+        <app-keyword *ngFor="let str of allSearchStr" [label]="str" [removeKeyword]="removeKeyword"></app-keyword>
+    </div>
+</div>

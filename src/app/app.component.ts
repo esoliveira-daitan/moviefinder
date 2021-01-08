@@ -6,5 +6,16 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'moviefinder';
+  title = 'MovieFinder';
+  columns = ['Title', 'Release Date', 'Overview'];
+  data = [{
+    title: 'Matrix',
+    releaseDate: '1993-02-03',
+    overview: 'hehe'
+  },
+  {
+    title: 'Matrix',
+    releaseDate: '1993-02-03',
+    overview: 'hehe'
+  }];
 }

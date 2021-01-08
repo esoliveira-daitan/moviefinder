@@ -1,0 +1,36 @@
+.app-keyword {
+    display: flex;
+    flex-direction: row;
+    background-color: rgb(224, 222, 222);
+    border-radius: 100px;
+    margin-top: 0.2rem;
+    margin-right: 0.2rem;
+    position: relative;
+    padding: 0 1rem;
+    justify-content: center;
+    align-items: center;
+    max-width: fit-content;
+    &:hover {
+        background-color: rgb(209, 209, 209);
+    }
+
+    & > .keyword {
+        font-family: 'Roboto', sans-serif;
+        font-size: 10pt;
+        margin-right: 0.3rem;
+        white-space: nowrap;
+    }
+    
+    & > .button {
+        background-color: rgb(128, 126, 126);
+        font-weight: bold;
+        border: rgb(128, 126, 126);
+        border-radius: 100%;
+        color: #FFF;
+        cursor: pointer;
+        font-family: 'Roboto', sans-serif;
+        font-size: 8pt;
+        outline: none;
+        padding: 1px 5px;;
+    }    
+}

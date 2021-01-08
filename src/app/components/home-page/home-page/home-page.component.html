@@ -1,0 +1,5 @@
+<div class="app-home-page">
+  <app-title></app-title>
+  <p class="about">{{ about }}</p>
+  <app-search-bar [placeholder]="searchBarPlaceholder" (sendValue)="catchSearchString($event)"></app-search-bar>
+</div>
